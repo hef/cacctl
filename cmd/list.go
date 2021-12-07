@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hef/cacctl/internal/client"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 	"os/signal"
 	"syscall"
@@ -11,6 +12,10 @@ import (
 
 func init() {
 	rootCmd.AddCommand(listCmd)
+	listCmd.PersistentFlags().String("username", "", "cac username")
+	listCmd.PersistentFlags().String("password", "", "cac password")
+	viper.BindPFlag("username", listCmd.PersistentFlags().Lookup("username"))
+	viper.BindPFlag("password", listCmd.PersistentFlags().Lookup("password"))
 }
 
 var listCmd = &cobra.Command{
@@ -21,7 +26,12 @@ var listCmd = &cobra.Command{
 		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 		defer cancel()
 
-		c, err := client.New()
+		c, err := client.New(
+			client.WithUsernameAndPassword(
+				viper.GetString("username"),
+				viper.GetString("password"),
+			),
+		)
 		if err != nil {
 			panic(err)
 		}
