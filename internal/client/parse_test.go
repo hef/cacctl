@@ -33,7 +33,10 @@ func TestParseLogin(t *testing.T) {
 		Package:    "CloudPRO v4",
 	}
 
-	servers := parseServersFromBody(f)
+	servers, err := parseServersFromBody(f)
+	if err != nil {
+		t.Errorf("expected no error from ParseServersFrom body, got %s", err)
+	}
 
 	if len(servers) != 1 {
 		t.Errorf("got unexpected number of servers back, expected 1, got %d", len(servers))
@@ -70,19 +73,19 @@ func TestParseLogin(t *testing.T) {
 		if expectedServer.Ipv6.Equal(server.Ipv6) {
 			t.Errorf("expected Ipv6: %s, got %s", expectedServer.Ipv6, server.Ipv6)
 		}
-		if expectedServer.Hostname == server.Hostname {
+		if expectedServer.Hostname != server.Hostname {
 			t.Errorf("expected Hostname: %s, got %s", expectedServer.Hostname, server.Hostname)
 		}
-		if expectedServer.CpuCount == server.CpuCount {
+		if expectedServer.CpuCount != server.CpuCount {
 			t.Errorf("expected cpu count %d, got %d", expectedServer.CpuCount, server.CpuCount)
 		}
-		if expectedServer.RamMB == server.RamMB {
+		if expectedServer.RamMB != server.RamMB {
 			t.Errorf("expected Ram (MB) %d, got %d", expectedServer.RamMB, server.RamMB)
 		}
-		if expectedServer.SsdGB == server.SsdGB {
+		if expectedServer.SsdGB != server.SsdGB {
 			t.Errorf("expected Ssd (GB) %d, got %d", expectedServer.SsdGB, server.SsdGB)
 		}
-		if expectedServer.Package == server.Package {
+		if expectedServer.Package != server.Package {
 			t.Errorf("expected Package %s, got %s", expectedServer.Package, server.Package)
 		}
 

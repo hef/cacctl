@@ -3,9 +3,12 @@ package client
 import (
 	"context"
 	"errors"
+	"github.com/PuerkitoBio/goquery"
 	"io"
+	"log"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -31,6 +34,7 @@ type Server struct {
 }
 
 type ListResponse struct {
+	Servers []Server
 }
 
 func (c *Client) List(ctx context.Context) (*ListResponse, error) {
@@ -58,9 +62,45 @@ func (c *Client) List(ctx context.Context) (*ListResponse, error) {
 
 	debugPrintResp(resp, nil)
 
-	return &ListResponse{}, nil
+	servers, err := parseServersFromBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ListResponse{
+		Servers: servers,
+	}, nil
 }
 
-func parseServersFromBody(reader io.Reader) []Server {
-	return nil
+func parseServersFromBody(reader io.Reader) ([]Server, error) {
+	doc, err := goquery.NewDocumentFromReader(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	var servers []Server
+	doc.Find(".panel.panel-default").Each(func(i int, selection *goquery.Selection) {
+		server := Server{}
+		serverName := strings.TrimSpace(selection.Find("td").First().Text())
+		if serverName == "" {
+			return
+		}
+		server.ServerName = serverName
+		currentOs := strings.TrimSpace(selection.Find("td:contains('Current Os:')").Find("td").Next().First().Text())
+		server.CurrentOs = currentOs
+
+		//serverIdString := strings.TrimSpace(selection.Find("tr:contains('Server ID:')").Find("td").Text())
+		//serverId, _ := strconv.ParseInt(serverIdString, 10, 32)
+		//server.ServerId = int(serverId)
+
+		x := selection.Find("td:contains('IPv4:')").First().Text()
+		log.Printf("%s", x)
+
+		log.Println(selection.Html())
+
+		servers = append(servers, server)
+
+	})
+
+	return servers, nil
 }
