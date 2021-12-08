@@ -23,5 +23,6 @@ func Execute() {
 }
 
 func initConfig() {
+	viper.SetEnvPrefix("CAC")
 	viper.AutomaticEnv()
 }
