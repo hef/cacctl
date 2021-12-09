@@ -88,7 +88,5 @@ func TestParseLogin(t *testing.T) {
 		if expectedServer.Package != server.Package {
 			t.Errorf("expected Package %s, got %s", expectedServer.Package, server.Package)
 		}
-
 	}
-
 }
