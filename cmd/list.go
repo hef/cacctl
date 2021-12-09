@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 )
@@ -22,6 +23,12 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all Servers",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		if viper.GetString("username") == "" || viper.GetString("password") == "" {
+			log.Printf("Set a username and password with --username and --password")
+			log.Printf("or by setting the environment variables CAC_USERNAME and CAC_PASSWORD")
+			os.Exit(1)
+		}
 
 		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 		defer cancel()
