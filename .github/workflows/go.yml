@@ -39,3 +39,5 @@ jobs:
       - name: Run GoReleaser
         if: steps.semrel.outputs.version != ''
         uses: goreleaser/goreleaser-action@v2
+        with:
+          args: release --rm-dist
