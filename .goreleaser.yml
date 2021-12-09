@@ -30,3 +30,8 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  - tap:
+      owner: hef
+      name: homebrew-cacctl
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
