@@ -33,5 +33,5 @@ changelog:
 brews:
   - tap:
       owner: hef
-      name: homebrew-cacctl
+      name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
