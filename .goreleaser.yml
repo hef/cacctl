@@ -37,3 +37,6 @@ brews:
       owner: hef
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: https://github.com/hef/cacctl
+    description: CAC command-line interface
+
