@@ -8,3 +8,9 @@ func WithUsernameAndPassword(username, password string) Option {
 		c.password = password
 	}
 }
+
+func WithUserAgent(userAgent string) Option {
+	return func(c *Client) {
+		c.userAgent = userAgent
+	}
+}

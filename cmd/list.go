@@ -40,6 +40,7 @@ var listCmd = &cobra.Command{
 				viper.GetString("username"),
 				viper.GetString("password"),
 			),
+			client.WithUserAgent("cacctl/"+Version),
 		)
 		if err != nil {
 			panic(err)

@@ -8,9 +8,10 @@ import (
 )
 
 type Client struct {
-	username string
-	password string
-	c        *http.Client
+	username  string
+	password  string
+	userAgent string
+	c         *http.Client
 }
 
 type err string
@@ -54,6 +55,10 @@ func New(options ...Option) (*Client, error) {
 			}
 			return nil
 		}
+	}
+
+	if c.userAgent == "" {
+		c.userAgent = "cacctl/unknown"
 	}
 
 	return c, nil

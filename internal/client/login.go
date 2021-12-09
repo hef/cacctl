@@ -17,7 +17,7 @@ func (c *Client) login(ctx context.Context) (*LoginResponse, error) {
 func (c *Client) loginWithUsernameAndPassword(ctx context.Context, username, password string) (*LoginResponse, error) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://panel.cloudatcost.com/login.php", nil)
-	req.Header.Set("User-Agent", "cacctl/0.0.0")
+	req.Header.Set("User-Agent", c.userAgent)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (c *Client) loginWithUsernameAndPassword(ctx context.Context, username, pas
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "cacctl/0.0.0")
+	req.Header.Set("User-Agent", c.userAgent)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	_, err = c.c.Do(req)
 	if err != nil {

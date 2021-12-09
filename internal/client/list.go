@@ -43,13 +43,13 @@ func (c *Client) List(ctx context.Context) (*ListResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "cacctl/0.0.0")
+	req.Header.Set("User-Agent", c.userAgent)
 
 	resp, err := c.c.Do(req)
 	if errors.Is(err, needsLoginErr) {
 		c.login(ctx)
 		req, err = http.NewRequestWithContext(ctx, "GET", "https://panel.cloudatcost.com", nil)
-		req.Header.Set("User-Agent", "cacctl/0.0.0")
+		req.Header.Set("User-Agent", c.userAgent)
 		if err != nil {
 			return nil, err
 		}
