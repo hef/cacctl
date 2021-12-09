@@ -60,7 +60,7 @@ func (c *Client) List(ctx context.Context) (*ListResponse, error) {
 		return nil, err
 	}
 
-	debugPrintResp(resp, nil)
+	//debugPrintResp(resp, nil)
 
 	servers, err := parseServersFromBody(resp.Body)
 	if err != nil {

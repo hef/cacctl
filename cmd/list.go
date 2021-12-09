@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"github.com/hef/cacctl/internal/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"text/tabwriter"
 )
 
 func init() {
@@ -25,8 +27,8 @@ var listCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if viper.GetString("username") == "" || viper.GetString("password") == "" {
-			log.Printf("Set a username and password with --username and --password")
-			log.Printf("or by setting the environment variables CAC_USERNAME and CAC_PASSWORD")
+			fmt.Printf("Set a username and password with --username and --password ")
+			fmt.Printf("or by setting the environment variables CAC_USERNAME and CAC_PASSWORD.\n")
 			os.Exit(1)
 		}
 
@@ -45,9 +47,15 @@ var listCmd = &cobra.Command{
 
 		response, err := c.List(ctx)
 		if err != nil {
-			panic(err)
+			log.Printf("error: %s", err)
 		}
-		log.Printf("list response: %+v", response)
+
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		fmt.Fprintln(w, "ID\tNAME\tIP\tCPU\tRAM\tSSD\tPACKAGE")
+		for _, server := range response.Servers {
+			fmt.Fprintf(w, "%d\t%s\t%s\t%d\t%d\t%d\t%s", server.ServerId, server.ServerName, server.IpAddress, server.CpuCount, server.RamMB, server.SsdGB, server.Package)
+		}
+		w.Flush()
 
 	},
 }
