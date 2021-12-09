@@ -67,10 +67,10 @@ func TestParseLogin(t *testing.T) {
 		if expectedServer.CurrentOs != server.CurrentOs {
 			t.Errorf("expected Current OS: %s, got %s", expectedServer.CurrentOs, server.CurrentOs)
 		}
-		if expectedServer.Ipv4.Equal(server.Ipv4) {
+		if !expectedServer.Ipv4.Equal(server.Ipv4) {
 			t.Errorf("expected Ipv4: %s, got %s", expectedServer.Ipv4, server.Ipv4)
 		}
-		if expectedServer.Ipv6.Equal(server.Ipv6) {
+		if !expectedServer.Ipv6.Equal(server.Ipv6) {
 			t.Errorf("expected Ipv6: %s, got %s", expectedServer.Ipv6, server.Ipv6)
 		}
 		if expectedServer.Hostname != server.Hostname {

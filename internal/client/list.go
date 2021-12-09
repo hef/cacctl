@@ -5,16 +5,16 @@ import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	"io"
-	"log"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type Server struct {
 	ServerName string
-	ServerId   int
+	ServerId   int64
 	Installed  time.Time
 	IpAddress  net.IP
 	Netmask    net.IP
@@ -26,9 +26,9 @@ type Server struct {
 	Ipv6      net.IP
 
 	Hostname string
-	CpuCount int
-	RamMB    int
-	SsdGB    int
+	CpuCount int32
+	RamMB    int32
+	SsdGB    int32
 
 	Package string
 }
@@ -86,18 +86,58 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 			return
 		}
 		server.ServerName = serverName
-		currentOs := strings.TrimSpace(selection.Find("td:contains('Current Os:')").Find("td").Next().First().Text())
-		server.CurrentOs = currentOs
+		server.CurrentOs = strings.TrimSpace(selection.Find("td td:contains('Current Os:')").Next().Text())
+		server.Ipv4 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv4:')").Next().Text()))
+		server.Ipv6 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv6:')").Next().Text()))
 
-		//serverIdString := strings.TrimSpace(selection.Find("tr:contains('Server ID:')").Find("td").Text())
-		//serverId, _ := strconv.ParseInt(serverIdString, 10, 32)
-		//server.ServerId = int(serverId)
+		cpuCountString := selection.Find("td td:contains(' CPU:')").First().Text()
+		cpuCountString = cpuCountString[:len(cpuCountString)-len(" CPU:")]
+		cpuCount, err := strconv.ParseInt(cpuCountString, 10, 32)
+		if err != nil {
+			return
+		}
+		server.CpuCount = int32(cpuCount)
 
-		x := selection.Find("td:contains('IPv4:')").First().Text()
-		log.Printf("%s", x)
+		ramMBString := selection.Find("td td:contains('MB Ram:')").First().Text()
+		ramMBString = ramMBString[:len(ramMBString)-len("MB Ram:")]
+		ramMB, err := strconv.ParseInt(ramMBString, 10, 32)
+		if err != nil {
+			return
+		}
+		server.RamMB = int32(ramMB)
 
-		log.Println(selection.Html())
+		ssdGBString := selection.Find("td td:contains('GB SSD:')").First().Text()
+		ssdGBString = ssdGBString[:len(ssdGBString)-len("GB SSD:")]
+		ssdGB, err := strconv.ParseInt(ssdGBString, 10, 32)
+		if err != nil {
+			return
+		}
+		server.SsdGB = int32(ssdGB)
 
+		server.Package = strings.TrimSpace(selection.Find("[id^=Body_].panel-collapse.in div").Last().Text())
+
+		infoBox, ok := selection.Find("[id^=Info_]").First().Attr("data-content")
+		if ok {
+			info, err := goquery.NewDocumentFromReader(strings.NewReader(infoBox))
+			if err != nil {
+				return
+			}
+			ServerIdString := strings.TrimSpace(info.Find("td:contains('Server ID:')").Next().Text())
+			server.ServerId, err = strconv.ParseInt(ServerIdString, 10, 64)
+			if err != nil {
+				return
+			}
+
+			InstallDateString := strings.TrimSpace(info.Find("td:contains('Installed:')").Next().Text())
+			server.Installed, err = time.Parse("01/02/2006", InstallDateString)
+			if err != nil {
+				return
+			}
+			server.IpAddress = net.ParseIP(strings.TrimSpace(info.Find("td:contains('IP Address:')").Next().Text()))
+			server.Netmask = net.ParseIP(strings.TrimSpace(info.Find("td:contains('Netmask:')").Next().Text()))
+			server.Gateway = net.ParseIP(strings.TrimSpace(info.Find("td:contains('Gateway:')").Next().Text()))
+			server.Password = strings.TrimSpace(info.Find("td:contains('Password:')").Next().Text())
+		}
 		servers = append(servers, server)
 
 	})
