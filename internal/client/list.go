@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"errors"
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"net"
@@ -39,23 +38,7 @@ type ListResponse struct {
 
 func (c *Client) List(ctx context.Context) (*ListResponse, error) {
 
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://panel.cloudatcost.com", nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("User-Agent", c.userAgent)
-
-	resp, err := c.c.Do(req)
-	if errors.Is(err, needsLoginErr) {
-		c.login(ctx)
-		req, err = http.NewRequestWithContext(ctx, "GET", "https://panel.cloudatcost.com", nil)
-		req.Header.Set("User-Agent", c.userAgent)
-		if err != nil {
-			return nil, err
-		}
-		resp, err = c.c.Do(req)
-	}
-
+	resp, err := c.do(ctx, http.MethodGet, "https://panel.cloudatcost.com", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +66,9 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 		server := Server{}
 		serverName := strings.TrimSpace(selection.Find("td").First().Text())
 		if serverName == "" {
+			return
+		}
+		if serverName == "No Results Found" {
 			return
 		}
 		server.ServerName = serverName

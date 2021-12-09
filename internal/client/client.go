@@ -1,17 +1,21 @@
 package client
 
 import (
+	"context"
+	"errors"
 	"io"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
+	"strings"
 )
 
 type Client struct {
-	username  string
-	password  string
-	userAgent string
-	c         *http.Client
+	username   string
+	password   string
+	userAgent  string
+	httpClient *http.Client
 }
 
 type err string
@@ -41,15 +45,15 @@ func New(options ...Option) (*Client, error) {
 		o(c)
 	}
 
-	if c.c == nil {
+	if c.httpClient == nil {
 		jar, err := cookiejar.New(nil)
 		if err != nil {
 			return nil, err
 		}
-		c.c = &http.Client{
+		c.httpClient = &http.Client{
 			Jar: jar,
 		}
-		c.c.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		c.httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 			if req.URL.String() == "https://panel.cloudatcost.com/login.php" {
 				return needsLoginErr
 			}
@@ -62,4 +66,41 @@ func New(options ...Option) (*Client, error) {
 	}
 
 	return c, nil
+}
+
+func (c *Client) newRequest(ctx context.Context, method, url string, form *url.Values) (*http.Request, error) {
+
+	var reader io.Reader
+	if form != nil {
+		reader = strings.NewReader(form.Encode())
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, url, reader)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", c.userAgent)
+	if form != nil {
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	}
+	return req, nil
+}
+
+func (c *Client) do(ctx context.Context, method, url string, form *url.Values) (*http.Response, error) {
+
+	req, err := c.newRequest(ctx, method, url, form)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if errors.Is(err, needsLoginErr) {
+		c.login(ctx)
+		req, err = c.newRequest(ctx, method, url, form)
+		if err != nil {
+			return nil, err
+		}
+		resp, err = c.httpClient.Do(req)
+	}
+	return resp, err
 }

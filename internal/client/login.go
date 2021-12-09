@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type LoginResponse struct {
@@ -21,7 +20,7 @@ func (c *Client) loginWithUsernameAndPassword(ctx context.Context, username, pas
 	if err != nil {
 		return nil, err
 	}
-	c.c.Do(req)
+	c.httpClient.Do(req)
 
 	form := url.Values{}
 	form.Add("username", username)
@@ -29,13 +28,8 @@ func (c *Client) loginWithUsernameAndPassword(ctx context.Context, username, pas
 	form.Add("failedpage", "login-failed-2.php")
 	form.Add("submit", "Login")
 
-	req, err = http.NewRequestWithContext(ctx, http.MethodPost, "https://panel.cloudatcost.com/manage-check2.php", strings.NewReader(form.Encode()))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("User-Agent", c.userAgent)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	_, err = c.c.Do(req)
+	req, err = c.newRequest(ctx, http.MethodPost, "https://panel.cloudatcost.com/manage-check2.php", &form)
+	_, err = c.httpClient.Do(req) // todo: check response for failed password
 	if err != nil {
 		return nil, err
 	}
