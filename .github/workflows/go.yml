@@ -36,3 +36,6 @@ jobs:
           allow-initial-development-versions: true
           changelog-generator-opt: "emojis=true"
           prepend: true
+      - name: Run GoReleaser
+        if: steps.semrel.outputs.version != ''
+        uses: goreleaser/goreleaser-action@v2
