@@ -39,6 +39,8 @@ jobs:
           allow-initial-development-versions: true
           changelog-generator-opt: "emojis=true"
           prepend: true
+      - name: Hack to pull in current tag
+        uses: actions/checkout@v2
       - name: Run GoReleaser
         if: steps.semrel.outputs.version != ''
         uses: goreleaser/goreleaser-action@v2
