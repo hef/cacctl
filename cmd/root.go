@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+var Version = ""
+var Commit = ""
+var Date = ""
+
 func init() {
 	cobra.OnInitialize(initConfig)
 }
