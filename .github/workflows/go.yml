@@ -35,4 +35,4 @@ jobs:
           changelog-file: CHANGELOG.md
           allow-initial-development-versions: true
           changelog-generator-opt: "emojis=true"
-          prepend-changelog: true
+          prepend: true
