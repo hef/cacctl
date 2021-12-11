@@ -15,10 +15,6 @@ import (
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-	listCmd.PersistentFlags().String("username", "", "cac username")
-	listCmd.PersistentFlags().String("password", "", "cac password")
-	viper.BindPFlag("username", listCmd.PersistentFlags().Lookup("username"))
-	viper.BindPFlag("password", listCmd.PersistentFlags().Lookup("password"))
 }
 
 var listCmd = &cobra.Command{

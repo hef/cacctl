@@ -13,6 +13,10 @@ var Date = ""
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().String("username", "", "CAC Username")
+	rootCmd.PersistentFlags().String("password", "", "CAC Password")
+	viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
+	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))
 }
 
 var rootCmd = &cobra.Command{
