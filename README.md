@@ -20,3 +20,7 @@ Control your CAC resource from the convencience of your shell!
 ## List servers
 
 `cacctl list`
+
+## Build a server
+
+`cacctl build`
