@@ -1,0 +1,175 @@
+
+		 
+		 
+
+<!DOCTYPE html>
+<html lang='en' class='wf-museoslab-n3-active wf-museoslab-n5-active wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanovascosf-n3-active wf-active'>
+<head>
+<meta charset='utf-8'>
+
+<!bootstrap>
+
+<link rel="stylesheet" href="/css/styles.css">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/panel/css/site.css">
+<link rel='stylesheet' href='/panel/css/assets.css'>
+<link rel="stylesheet" href="/panel/css/bootstrap.submodal.css">
+<link rel="stylesheet" href="/css/Chart.min.css">
+<link rel="stylesheet" href="/css/datatables.min.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/panel/images/ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/panel/images/ico/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/panel/images/ico/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/panel/images/ico/manifest.json">
+<link rel="mask-icon" href="/panel/images/ico/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/panel/images/ico/favicon.ico">
+<meta name="msapplication-config" content="/panel/images/ico/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body>
+<header class="wraper BackDrop"> </header>
+<header class="wraper head">
+	<section class="head-els">
+		<div class="logo">
+			<img height='40' src="/cloud/img/cp_logo.png ">
+		</div>
+	</section>
+</header>
+		 
+<div align='center' class='header-menu'>
+	<!-- Right Hand Floater -->
+	
+	<!-- Reseller's User Button -->
+&nbsp;<div class='btn-group btn-group-sm closed' align='left'>
+	<a class='btn btn-default' href='#'' >&nbsp;&nbsp;Developer CloudPRO</a>
+	<a class='btn btn-default dropdown-toggle' data-toggle='dropdown' href='#'><span class='fa fa-caret-down'></span></a>
+	<ul class='dropdown-menu'>
+	<li><a href='/' ><i class='fa fa-desktop'></i>&nbsp;&nbsp;List Servers</a></li>
+	<li><a href='/build' ><i class ='fa fa-plus'></i>&nbsp;&nbsp;&nbsp;Build Server</a></li><li><a href='/script' <i class ='fa fa-bookmark' >&nbsp;&nbsp;&nbsp;Install Scripts</a></li></ul></div>&nbsp;<div class='btn-group btn-group-sm closed' align='left'>
+	<a class='btn btn-default' href='#''>&nbsp;&nbsp;Crypto Mining</a>
+	<a class='btn btn-default dropdown-toggle' data-toggle='dropdown' href='#'><span class='fa fa-caret-down'></span></a>
+	<ul class='dropdown-menu'>
+	<li><a href='/crypto' <i class='fa fa-desktop'></i>&nbsp;&nbsp;&nbsp;List Miners</a></li>
+	<li><a href='/wallet'><i class='fa fa-edit fa-fw'></i>&nbsp;&nbsp;Wallet</a></li>
+	</ul></div>	
+	
+<!--	<div class="btn-group btn-group-sm closed" align="left"><a href="http://cloudatcost.com/cloud-vpn" target="_blank" class="btn btn-sm btn-default"><i class ="fa fa-thumbs-o-up" ></i>&nbsp;&nbsp;VPN</a></div>&nbsp;	
+	<div class="btn-group btn-group-sm closed" align="left"><a href="http://download.cloudatcost.com/" target="_blank" class="btn btn-sm btn-default"><i class ="fa fa-thumbs-o-up" ></i>&nbsp;&nbsp;Free Storage</a></div>&nbsp;	
+-->	
+<!--	<div class="btn-group btn-group-sm closed" align="left"><a href="api-details.php" target="_blank" class="btn btn-sm btn-default" onclick=''><i class="fa fa-gamepad"></i>&nbsp;&nbsp;API</a></div>&nbsp;  -->
+	<div class="btn-group btn-group-sm closed" align="left"><a href="#" class="btn btn-sm btn-default" onclick='openSettings();'><i class="fa fa-cogs"></i>&nbsp;&nbsp;Settings</a></div>&nbsp;
+	
+	
+
+	<div class="btn-group btn-group-sm closed" align="left"><a href="/logout.php" class="btn btn-sm btn-default"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;Logout</a></div></div>
+
+<div class='main-holder' align='cetner'>
+<br>
+<div class='panel panel-default'>
+		
+			<div class='panel-heading'>
+				<h3 class='panel-title'><table width='100%'><tr align='center'><td></i>&nbsp;&nbsp;Please select which infrastructure you would like to build to.</td><td align='right'>
+				
+				</td></tr></table></h3>
+			</div>
+		</div><form name='build' id='build' method='POST' action=''><table style="width:100%"><tr><td align='center'><button style='width:80%;margin:10px;' class='btn btn-sm btn-info' name='infra' value='146a053564029f'>Build to CloudPRO v4</button></td></tr></table><input type="hidden" name="token" value="1c074d9ed538ed" ></form>
+</div>
+<!-- Blue Sky Background -->
+<!-- /.Blue Sky Background -->
+<div class="footer" align='center'> <br>
+ </div>
+
+
+<!-- Modal -->
+	<div class='modal fade' id='queModal' tabindex='-1' role='dialog' aria-labelledby='queModalLabel' aria-hidden='true'>
+		  <div class='modal-header'>
+			<h3 class='modal-title' id='modalTitle'>Title</h3>
+		  </div>
+		  <div class='modal-body'>
+			<!-- Sub-Modal -->
+			<div id="SubqueModal" class="modal sub-modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-body">
+						<div class="control-group">
+							<table width="100%"><tr><td id="SUBmodal">Please enter your Password to continue: </td></tr>
+							<tr><td id="lowMod">
+								<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+								<input class="form-control" type="password" id="inputPSSWD" placeholder="Password">
+								</div>
+								</td></tr>
+							</table>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-small" data-dismiss="submodal" aria-hidden="true">Cancel</button>
+					<button class="btn btn-small btn-danger" id="SUBmodalOKbtn">Continue</button>
+				</div>
+			</div><!-- /.Sub-Modal -->
+			<table width='100%'><tr><td id='modalBody'>Body</td></tr></table>
+		  </div>
+		  <div class='modal-footer' id='btns'>
+			<button type='button' class='btn btn-small btn-default' data-dismiss='modal'>No</button>
+			<button type='button' class='btn btn-small btn-default'>Yes</button>
+		  </div>
+	</div>
+<!-- /.Modal -->
+
+
+<script type='text/javascript' src="/panel/js/jQuery.1.10.2.js"></script>
+<!-- <script type='text/javascript' src="/panel/js/jQuery-3.6.0.min.js"></script> -->
+<script type='text/javascript' src='/panel/js/bootstrap.min.js'></script>
+<script type='text/javascript' src='/panel/js/bootstrap.submodal.js'></script>
+<script type='text/javascript' src='/panel/js/siteFunctions.js'></script>
+<script type='text/javascript' src='/js/datatables.min.js'></script>
+<script>
+$(document).ready( function () {
+    $('#TransactionTable').DataTable({
+		"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+		"order": [[ 4, "desc" ]]
+	});
+} );
+(function($) {"use strict";
+	var fullHeight = function() {
+		$('.js-fullheight').css('height', $(window).height());
+		$(window).resize(function(){
+			$('.js-fullheight').css('height', $(window).height());
+		});
+	};
+	fullHeight();
+	$('#sidebarCollapse').on('click', function () {
+      $('#sidebar').toggleClass('active');
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-148896952-1"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('configUA-148896952-1');
+  
+   (function($) {"use strict";
+	var fullHeight = function() {
+		$('.js-fullheight').css('height', $(window).height());
+		$(window).resize(function(){
+			$('.js-fullheight').css('height', $(window).height());
+		});
+	};
+	fullHeight();
+	$('#sidebarCollapse').on('click', function () {
+      $('#sidebar').toggleClass('active');
+	  });
+	})(jQuery);
+</script>
+
+
+

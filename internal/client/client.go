@@ -86,7 +86,7 @@ func (c *Client) newRequest(ctx context.Context, method, url string, form *url.V
 	return req, nil
 }
 
-func (c *Client) do(ctx context.Context, method, url string, form *url.Values) (*http.Response, error) {
+func (c *Client) sendRequest(ctx context.Context, method, url string, form *url.Values) (*http.Response, error) {
 
 	req, err := c.newRequest(ctx, method, url, form)
 	if err != nil {
@@ -95,7 +95,10 @@ func (c *Client) do(ctx context.Context, method, url string, form *url.Values) (
 
 	resp, err := c.httpClient.Do(req)
 	if errors.Is(err, needsLoginErr) {
-		c.login(ctx)
+		_, err = c.login(ctx)
+		if err != nil {
+			return nil, err
+		}
 		req, err = c.newRequest(ctx, method, url, form)
 		if err != nil {
 			return nil, err
