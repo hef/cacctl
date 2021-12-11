@@ -17,10 +17,10 @@ Control your CAC resource from the convencience of your shell!
 
 # Usage
 
-## List servers
+## List Servers
 
 `cacctl list`
 
-## Build a server
+## Build a Server
 
 `cacctl build`
