@@ -21,8 +21,8 @@ Control your CAC resource from the convenience of your shell
 
 `cacctl list`
 
-Example Output
---------------
+### Example Output
+
 
 ```
 ID        NAME                          IP            CPU RAM SSD PACKAGE
@@ -38,8 +38,7 @@ Build a server with 1 CPU, 512MB of ram, and 10GB of storage:
 
 `cactl build --cpu 1 --ram 512 --storage 10`
 
-Options
--------
+### Options
 
 | Option     | Type    | Description              |
 |------------|---------|--------------------------|
@@ -49,10 +48,10 @@ Options
 | os         | String  | Operating System         |
 | ram        | Integer | Memory                   |
 | storage    | Integer | Disk Space               |
- 
 
-Valid Operating Systems:
-------------------------
+
+### Valid Operating Systems:
+
 
 * CentOS 7.9 64Bit
 * CentOS 8.3 64bit
