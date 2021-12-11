@@ -21,6 +21,15 @@ Control your CAC resource from the convencience of your shell!
 
 `cacctl list`
 
+Example Output
+--------------
+
+```
+ID        NAME                          IP            CPU RAM SSD PACKAGE
+255330777 Installing                    142.47.89.170 1   512 10  
+255330776 c999963378-cloudpro-728834606 142.47.89.169 1   512 10  CloudPRO v4
+```
+
 ## Build a Server
 
 `cacctl build`
