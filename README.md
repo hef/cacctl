@@ -29,9 +29,9 @@ Download the latest release from https://github.com/hef/cacctl/releases/latest f
 
 
 ```
-ID        NAME                          IP            CPU RAM SSD PACKAGE
-255330777 Installing                    142.47.89.170 1   512 10  
-255330776 c999963378-cloudpro-728834606 142.47.89.169 1   512 10  CloudPRO v4
+ID        NAME                          STATUS     IP            CPU RAM SSD PACKAGE
+255330813                               Installing 142.47.89.190 1   512 10  CloudPRO v4
+255330812 c999963378-cloudpro-329575357 Powered On 142.47.89.189 1   512 10  CloudPRO v4
 ```
 
 ## Build a Server
