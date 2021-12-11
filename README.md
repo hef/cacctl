@@ -4,16 +4,20 @@ Control your CAC resource from the convenience of your shell
 
 # Install
 
-## Using homebrew
+## Using Homebrew
 
 `brew install hef/tap/cacctl`
 
+## Directly from Github 
+
+Download the latest release from https://github.com/hef/cacctl/releases/latest for your operating system.
+
 # Configuration
 
-| Environment Variable  | Description        |
-| --------------------- | ------------------ |
-| CAC_USERNAME          | Your CAC Username  |
-| CAC_PASSWORD          | Your CAC Password  |
+| Environment Variable | Description       |
+|----------------------|-------------------|
+| CAC_USERNAME         | Your CAC Username |
+| CAC_PASSWORD         | Your CAC Password |
 
 # Usage
 
@@ -49,9 +53,7 @@ Build a server with 1 CPU, 512MB of ram, and 10GB of storage:
 | ram        | Integer | Memory                   |
 | storage    | Integer | Disk Space               |
 
-
 ### Valid Operating Systems:
-
 
 * CentOS 7.9 64Bit
 * CentOS 8.3 64bit
