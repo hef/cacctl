@@ -10,6 +10,7 @@ import (
 type Server struct {
 	ServerName string
 	ServerId   int64
+	Status     string
 	Installed  time.Time
 	IpAddress  net.IP
 	Netmask    net.IP

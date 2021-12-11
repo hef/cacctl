@@ -18,14 +18,25 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 	var servers []Server
 	doc.Find(".panel.panel-default").Each(func(i int, selection *goquery.Selection) {
 		server := Server{}
-		serverName := strings.TrimSpace(selection.Find("td").First().Text())
-		if serverName == "" {
+		TitleNode := selection.Find("td[id^=PanelTitle_]").First().Text()
+		if TitleNode == "" {
 			return
 		}
-		if serverName == "No Results Found" {
-			return
+
+		icon, ok := selection.Find("td[id^=PanelTitle_] i").First().Attr("class")
+		if ok {
+			if icon == "fa fa-spinner fa-spin" {
+				// Installing
+				server.Status = strings.TrimSpace(selection.Find("td[id^=PanelTitle_]").First().Text())
+			} else {
+				// If the Icon isn't a spinner, this spot holds the server name
+				server.ServerName = strings.TrimSpace(selection.Find("td[id^=PanelTitle_]").First().Text())
+			}
+			if icon == "fa fa-cloud-upload" {
+				server.Status = "Powered On"
+			}
 		}
-		server.ServerName = serverName
+
 		server.CurrentOs = strings.TrimSpace(selection.Find("td td:contains('Current Os:')").Next().Text())
 		server.Ipv4 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv4:')").Next().Text()))
 		server.Ipv6 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv6:')").Next().Text()))
@@ -54,7 +65,7 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 		}
 		server.SsdGB = int32(ssdGB)
 
-		server.Package = strings.TrimSpace(selection.Find("[id^=Body_].panel-collapse.in div").Last().Text())
+		server.Package = strings.TrimSpace(selection.Find("[id^=Body_].panel-collapse div").Last().Text())
 
 		infoBox, ok := selection.Find("[id^=Info_]").First().Attr("data-content")
 		if ok {
