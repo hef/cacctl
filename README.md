@@ -1,6 +1,6 @@
 # cacctl
 
-Control your CAC resource from the convencience of your shell!
+Control your CAC resource from the convenience of your shell
 
 # Install
 
