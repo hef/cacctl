@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"github.com/hef/cacctl/internal/client"
+	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/sftp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -18,7 +21,7 @@ import (
 func init() {
 	rootCmd.AddCommand(sshCopyIdCmd)
 	sshCopyIdCmd.PersistentFlags().StringP("identify-file", "i", "", "Use the identity file")
-	viper.BindPFlag("cpu", sshCopyIdCmd.PersistentFlags().Lookup("cpu"))
+	viper.BindPFlag("identify-file", sshCopyIdCmd.PersistentFlags().Lookup("identify-file"))
 }
 
 var sshCopyIdCmd = &cobra.Command{
@@ -40,18 +43,26 @@ var sshCopyIdCmd = &cobra.Command{
 			panic(err)
 		}
 
+		key, err := getPublicKey()
+		if err != nil {
+			panic(err)
+		}
+
 		serverList, err := c.List(ctx)
 		if err != nil {
 			log.Printf("Failed to get server list")
 		}
 
 		for _, server := range serverList.Servers {
-			err = sshCopyId(ctx, &server)
+			err = sshCopyId(ctx, &server, key)
+			if err != nil {
+				log.Printf("error copying id: %s", err)
+			}
 		}
 	},
 }
 
-func sshCopyId(ctx context.Context, server *client.Server) error {
+func sshCopyId(ctx context.Context, server *client.Server, key []byte) error {
 	ip := server.IpAddress
 	config := ssh.ClientConfig{
 		User: "root",
@@ -77,10 +88,60 @@ func sshCopyId(ctx context.Context, server *client.Server) error {
 		return err
 	}
 
-	f, err := sftpClient.Open(".profile")
+	f, err := sftpClient.Open(".ssh/authorized_keys")
+	if errors.Is(err, os.ErrNotExist) {
+		f, err := sftpClient.Create(".ssh/authorized_keys")
+		if errors.Is(err, os.ErrNotExist) {
+			err = sftpClient.Mkdir(".ssh")
+			if err != nil {
+				return err
+			}
+			f, err = sftpClient.Create(".ssh/authorized_keys")
+		}
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		io.Copy(f, bytes.NewReader(key))
+		return nil
+	}
 	if err != nil {
 		return err
 	}
+
 	io.Copy(os.Stdout, f)
 	return nil
+}
+
+func getPublicKey() ([]byte, error) {
+	identityFile := viper.GetString("identity-file")
+	if identityFile == "" {
+		keyPaths := []string{
+			"~/.ssh/id_ed25519.pub",
+			"~/.ssh/id_dsa.pub",
+			"~/.ssh/id_rsa.pub",
+		}
+		for _, keyPath := range keyPaths {
+			path, err := homedir.Expand(keyPath)
+			if err != nil {
+				return nil, err
+			}
+			_, err = os.Stat(path)
+			if err == nil {
+				identityFile = path
+				break
+			}
+		}
+	}
+
+	if len(identityFile) < 4 || identityFile[len(identityFile)-4:] != ".pub" {
+		identityFile = identityFile + ".pub"
+	}
+
+	f, err := os.Open(identityFile)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return io.ReadAll(f)
 }
