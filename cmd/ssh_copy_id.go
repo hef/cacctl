@@ -81,22 +81,3 @@ var sshCopyIdCmd = &cobra.Command{
 		}
 	},
 }
-
-func mergeKey(authorizedKeys, newKey []byte) (newFile []byte, err error) {
-
-	key, err := ssh.ParsePublicKey(newKey)
-	if err != nil {
-		return nil, err
-	}
-
-	for parseKey, _, _, rest, err := ssh.ParseAuthorizedKey(authorizedKeys); rest != nil {
-		if err != nil {
-			return nil, err
-		}
-		if bytes.Equal(key.Marshal(), parseKey.Marshal()) {
-			return nil, nil
-		}
-
-	}
-
-}
