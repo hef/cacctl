@@ -54,12 +54,22 @@ func TestH(t *testing.T) {
 	secondKey := sampleAuthorizedKey()
 	err = CopyId(context.TODO(), appFs, secondKey)
 	if err != nil {
-		panic(err)
+		t.Errorf("got error coping secondkey: %s", err)
 	}
 
 	f, err = appFs.Open(".ssh/authorized_keys")
 	if err != nil {
 		t.Errorf("got unexpected error opening authorized_keys: %s", err)
+	}
+
+	f, err = appFs.Open(".ssh/authorized_keys")
+	if err != nil {
+		t.Errorf("got unexpected error opening authorized_keys a second time: %s", err)
+	}
+
+	raw, err = io.ReadAll(f)
+	if err != nil {
+		t.Errorf("got unexpected error reading authorized_keys a second time: %s", err)
 	}
 
 	found, err = checkForKey(deployedKey, raw)

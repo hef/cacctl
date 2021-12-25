@@ -15,7 +15,7 @@ import (
 
 func CopyId(ctx context.Context, fs afero.Fs, key []byte) error {
 
-	f, err := fs.Open(".ssh/authorized_keys")
+	f, err := fs.OpenFile(".ssh/authorized_keys", os.O_RDWR|os.O_CREATE, 0644)
 	if errors.Is(err, os.ErrNotExist) {
 
 		f, err := fs.Create(".ssh/authorized_keys")
@@ -55,8 +55,8 @@ func CopyId(ctx context.Context, fs afero.Fs, key []byte) error {
 		return nil
 	}
 
-	newData := append([]byte{'\n'}, key...)
-	_, err = f.Write(newData)
+	//newData := append([]byte{'\n'}, key...)
+	_, err = f.Write(key)
 	if err != nil {
 		return err
 	}
