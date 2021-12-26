@@ -59,6 +59,7 @@ Build a server with 1 CPU, 512MB of ram, and 10GB of storage:
 * CentOS 8.3 64bit
 * Debian 9.13 64bit
 * FreeBSD 12.2 64bit
+* Ubuntu 18.04 LTS 64bit
 
 You May have other options available.
 
