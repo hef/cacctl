@@ -12,6 +12,7 @@ import (
 	"golang.org/x/crypto/ssh"
 	"log"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
@@ -51,33 +52,47 @@ var sshCopyIdCmd = &cobra.Command{
 			return
 		}
 
+		wg := sync.WaitGroup{}
 		for _, server := range serverList.Servers {
-
-			ip := server.IpAddress
-			config := ssh.ClientConfig{
-				User: "root",
-				Auth: []ssh.AuthMethod{
-					ssh.Password(server.Password),
-				},
-				HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-			}
-			client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%d", ip.String(), 22), &config)
-			if err != nil {
-				log.Printf("failed to connect to %d", server.ServerId)
-				break
-			}
-			defer client.Close()
-
-			sftpClient, err := sftp.NewClient(client)
-			if err != nil {
-				log.Printf("failed to create sftp client")
-				break
-			}
-
-			err = sshx.CopyId(ctx, sftpfs.New(sftpClient), key)
-			if err != nil {
-				log.Printf("error copying id: %s", err)
-			}
+			wg.Add(1)
+			go func() {
+				deployKey(ctx, server, key)
+				wg.Done()
+			}()
 		}
+		wg.Wait()
 	},
+}
+
+func deployKey(ctx context.Context, server client.Server, key []byte) {
+	ip := server.IpAddress
+	config := ssh.ClientConfig{
+		User: "root",
+		Auth: []ssh.AuthMethod{
+			ssh.Password(server.Password),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%d", ip.String(), 22), &config)
+	if err != nil {
+		log.Printf("failed to connect to %d", server.ServerId)
+		return
+	}
+	defer func(client *ssh.Client) {
+		err := client.Close()
+		if err != nil {
+			log.Printf("Failed to close client connection")
+		}
+	}(client)
+
+	sftpClient, err := sftp.NewClient(client)
+	if err != nil {
+		log.Printf("failed to create sftp client")
+		return
+	}
+
+	err = sshx.CopyId(ctx, sftpfs.New(sftpClient), key)
+	if err != nil {
+		log.Printf("error copying id: %s", err)
+	}
 }
