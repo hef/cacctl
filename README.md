@@ -61,3 +61,8 @@ Build a server with 1 CPU, 512MB of ram, and 10GB of storage:
 * FreeBSD 12.2 64bit
 
 You May have other options available.
+
+## ssh-copy-id
+
+`cacctl ssh-copy-id`
+The command will log into all of your instances and copy your ssh public key into authorized_keys
