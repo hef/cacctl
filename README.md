@@ -14,6 +14,27 @@ Download the latest release from https://github.com/hef/cacctl/releases/latest f
 
 # Configuration
 
+There are several ways to configure cacctls
+
+## Config File
+
+```yaml
+username: your@example.com
+password: your_password
+```
+
+Config file locations
+
+| Platform | Config File Location                              |
+|----------|---------------------------------------------------|
+| Linux    | `$HOME/.config/cacctl/config`                     |
+| OSX      | `$HOME/Library/Application Support/cacctl/config` |
+| Windows  | `%AppData%/cacctl/config`                         |
+
+You can specify a custom config file path with `--config` or `-c`
+
+## Environment Variables
+
 | Environment Variable | Description       |
 |----------------------|-------------------|
 | CAC_USERNAME         | Your CAC Username |
@@ -59,6 +80,7 @@ Build a server with 1 CPU, 512MB of ram, and 10GB of storage:
 * CentOS 8.3 64bit
 * Debian 9.13 64bit
 * FreeBSD 12.2 64bit
+* Ubuntu 18.04 LTS 64bit
 
 You May have other options available.
 
