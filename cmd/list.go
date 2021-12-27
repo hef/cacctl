@@ -47,11 +47,13 @@ var listCmd = &cobra.Command{
 			log.Printf("error: %s", err)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintln(w, "ID\tNAME\tSTATUS\tIP\tCPU\tRAM\tSSD\tPACKAGE")
-		for _, server := range response.Servers {
-			fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%d\t%d\t%d\t%s\n", server.ServerId, server.ServerName, server.Status, server.IpAddress, server.CpuCount, server.RamMB, server.SsdGB, server.Package)
+		if response != nil {
+			w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+			fmt.Fprintln(w, "ID\tNAME\tSTATUS\tIP\tCPU\tRAM\tSSD\tPACKAGE")
+			for _, server := range response.Servers {
+				fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%d\t%d\t%d\t%s\n", server.ServerId, server.ServerName, server.Status, server.IpAddress, server.CpuCount, server.RamMB, server.SsdGB, server.Package)
+			}
+			w.Flush()
 		}
-		w.Flush()
 	},
 }
