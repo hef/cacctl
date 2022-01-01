@@ -18,8 +18,8 @@ import (
 
 func init() {
 	rootCmd.AddCommand(sshCopyIdCmd)
-	sshCopyIdCmd.PersistentFlags().StringP("identify-file", "i", "", "Use the identity file")
-	viper.BindPFlag("identify-file", sshCopyIdCmd.PersistentFlags().Lookup("identify-file"))
+	sshCopyIdCmd.LocalNonPersistentFlags().StringP("identify-file", "i", "", "Use the identity file")
+	viper.BindPFlag("identify-file", sshCopyIdCmd.LocalNonPersistentFlags().Lookup("identify-file"))
 }
 
 var sshCopyIdCmd = &cobra.Command{
