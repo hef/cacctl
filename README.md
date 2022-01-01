@@ -14,7 +14,7 @@ Download the latest release from https://github.com/hef/cacctl/releases/latest f
 
 # Configuration
 
-There are several ways to configure cacctls
+run `cacctl configure` to interactively create a config file
 
 ## Config File
 
@@ -23,7 +23,7 @@ username: your@example.com
 password: your_password
 ```
 
-Config file locations
+Default config file locations vary by platform:
 
 | Platform | Config File Location                              |
 |----------|---------------------------------------------------|
