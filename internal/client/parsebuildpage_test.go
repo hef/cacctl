@@ -25,6 +25,25 @@ func TestParseBuildPage(t *testing.T) {
 	}
 }
 
+func TestParseBuildPageWithMacButton(t *testing.T) {
+	f, err := os.Open("testdata/build_page_with_mac_pro_button.html")
+	if err != nil {
+		panic(err)
+	}
+
+	form, err := parseBuildPage(f)
+	if err != nil {
+		t.Errorf("error parsing build page: %s", err)
+	}
+
+	if form.infra != "710704960be81" {
+		t.Errorf("got unexpected infra, expected %s, got %s", "710704960be81", form.infra)
+	}
+	if form.token != "1de9a246e7fa01" {
+		t.Errorf("got unexpected token, expected %s, got %s", "1de9a246e7fa01", form.token)
+	}
+}
+
 func TestParseBuildPageV4(t *testing.T) {
 	f, err := os.Open("testdata/build_page_v4.html")
 	if err != nil {
