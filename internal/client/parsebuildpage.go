@@ -22,7 +22,7 @@ func parseBuildPage(reader io.Reader) (*parsedBuildForm, error) {
 	form := &parsedBuildForm{}
 
 	var ok bool
-	form.infra, ok = doc.Find("button[name=infra]").First().Attr("value")
+	form.infra, ok = doc.Find("button[name=infra]:contains('Build to CloudPRO v4')").First().Attr("value")
 	if !ok {
 		return nil, errors.New("failed to parse page")
 	}

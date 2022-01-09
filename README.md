@@ -25,11 +25,11 @@ password: your_password
 
 Default config file locations vary by platform:
 
-| Platform | Config File Location                              |
-|----------|---------------------------------------------------|
-| Linux    | `$HOME/.config/cacctl/config`                     |
-| OSX      | `$HOME/Library/Application Support/cacctl/config` |
-| Windows  | `%AppData%/cacctl/config`                         |
+| Platform | Config File Location                                   |
+|----------|--------------------------------------------------------|
+| Linux    | `$HOME/.config/cacctl/config.yaml`                     |
+| OSX      | `$HOME/Library/Application Support/cacctl/config.yaml` |
+| Windows  | `%AppData%/cacctl/config.yaml`                         |
 
 You can specify a custom config file path with `--config` or `-c`
 
