@@ -50,9 +50,9 @@ You can specify a custom config file path with `--config` or `-c`
 
 
 ```
-ID        NAME                          STATUS     IP            CPU RAM SSD PACKAGE
-255330813                               Installing 142.47.89.190 1   512 10  CloudPRO v4
-255330812 c999963378-cloudpro-329575357 Powered On 142.47.89.189 1   512 10  CloudPRO v4
+ID        NAME                          STATUS     IP            CPU RAM SSD OS                     PACKAGE
+255330813                               Installing 142.47.89.190 1   512 10  Ubuntu 18.04 LTS 64bit CloudPRO v4
+255330812 c999963378-cloudpro-329575357 Powered On 142.47.89.189 1   512 10  Ubuntu 18.04 LTS 64bit CloudPRO v4
 ```
 
 ## Build a Server
