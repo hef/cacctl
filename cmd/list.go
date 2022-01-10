@@ -49,9 +49,9 @@ var listCmd = &cobra.Command{
 
 		if response != nil {
 			w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-			fmt.Fprintln(w, "ID\tNAME\tSTATUS\tIP\tCPU\tRAM\tSSD\tPACKAGE")
+			fmt.Fprintln(w, "ID\tNAME\tSTATUS\tIP\tCPU\tRAM\tSSD\tOS\tPACKAGE")
 			for _, server := range response.Servers {
-				fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%d\t%d\t%d\t%s\n", server.ServerId, server.ServerName, server.Status, server.IpAddress, server.CpuCount, server.RamMB, server.SsdGB, server.Package)
+				fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%d\t%d\t%d\t%s\t%s\n", server.ServerId, server.ServerName, server.Status, server.IpAddress, server.CpuCount, server.RamMB, server.SsdGB, server.CurrentOs, server.Package)
 			}
 			w.Flush()
 		}
