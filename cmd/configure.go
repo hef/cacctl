@@ -61,7 +61,10 @@ var configureCmd = &cobra.Command{
 			string(password),
 		}
 
-		_ = os.MkdirAll(path.Dir(viper.ConfigFileUsed()), os.ModePerm)
+		err = os.MkdirAll(path.Dir(configPath), os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
 		f, err := os.Create(configPath)
 		err = yaml.NewEncoder(f).Encode(&config)
 		if err != nil {
