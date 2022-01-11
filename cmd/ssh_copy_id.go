@@ -55,11 +55,11 @@ var sshCopyIdCmd = &cobra.Command{
 		wg := sync.WaitGroup{}
 		for _, server := range serverList.Servers {
 			wg.Add(1)
-			go func() {
+			go func(server client.Server) {
 				log.Printf("deploying key to cac-%d at %s", server.ServerId, server.IpAddress)
 				deployKey(ctx, server, key)
 				wg.Done()
-			}()
+			}(server)
 		}
 		wg.Wait()
 	},
