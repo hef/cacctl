@@ -23,6 +23,8 @@ func init() {
 
 var hostsTemplate = `---
 kubernetes:
+  vars:
+    ansible_user: root
   children:
     master:
       hosts:

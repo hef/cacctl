@@ -34,6 +34,7 @@ func TestParseServerList(t *testing.T) {
 				Netmask:    net.IPv4(255, 255, 255, 0),
 				Gateway:    net.IPv4(142, 47, 88, 1),
 				Password:   "3aXz7qSd9S",
+				VmName:     "c999963378-CloudPRO-519046902-629183859",
 				CurrentOs:  "Ubuntu 18.04 LTS 64bit",
 				Ipv4:       net.IPv4(142, 47, 88, 68),
 				Ipv6:       net.ParseIP("2607:8880::A000:1044"),
@@ -127,6 +128,9 @@ func TestParseServerList(t *testing.T) {
 				}
 				if expectedServer.Password != server.Password {
 					t.Errorf("expected Password %s, got %s", expectedServer.Password, server.Password)
+				}
+				if expectedServer.VmName != server.VmName {
+					t.Errorf("expected VM Name %s, got %s", expectedServer.VmName, server.VmName)
 				}
 				if expectedServer.CurrentOs != server.CurrentOs {
 					t.Errorf("expected Current OS: %s, got %s", expectedServer.CurrentOs, server.CurrentOs)

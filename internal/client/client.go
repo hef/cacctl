@@ -83,6 +83,9 @@ func (c *Client) newRequest(ctx context.Context, method, url string, form *url.V
 	if form != nil {
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	}
+	if method == http.MethodGet { // Cross Site Scripting Security?
+		req.Header.Set("Referer", "https://panel.cloudatcost.com")
+	}
 	return req, nil
 }
 

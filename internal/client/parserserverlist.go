@@ -4,10 +4,14 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"net"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
+
+// PowerCycle(2, "c999963378-CloudPRO-519046902-629183859", "255330174", "c999963378-cloudpro-799792359")
+var powerCycleCallRegex = regexp.MustCompile(`PowerCycle\(\d, "(?P<vmname>[\w\-]+)", "\d+", "[\w\-]+"\)`)
 
 func parseServersFromBody(reader io.Reader) ([]Server, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
@@ -88,6 +92,14 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 			server.Netmask = net.ParseIP(strings.TrimSpace(info.Find("td:contains('Netmask:')").Next().Text()))
 			server.Gateway = net.ParseIP(strings.TrimSpace(info.Find("td:contains('Gateway:')").Next().Text()))
 			server.Password = strings.TrimSpace(info.Find("td:contains('Password:')").Next().Text())
+
+		}
+		PowerCycleFunctionCall, ok := selection.Find("a[onclick*='PowerCycle']").First().Attr("onclick")
+		if ok {
+			m := powerCycleCallRegex.FindStringSubmatch(PowerCycleFunctionCall)
+			if len(m) > 0 {
+				server.VmName = m[1]
+			}
 		}
 		servers = append(servers, server)
 

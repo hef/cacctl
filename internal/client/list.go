@@ -17,6 +17,8 @@ type Server struct {
 	Gateway    net.IP
 	Password   string
 
+	VmName string
+
 	CurrentOs string
 	Ipv4      net.IP
 	Ipv6      net.IP
