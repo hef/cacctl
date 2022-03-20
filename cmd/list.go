@@ -16,6 +16,10 @@ func setupListFlags(command *cobra.Command) {
 	command.Flags().String("search", "", `search string`)
 	command.Flags().Int("limit", 25, `[5, 10, 25, 50, 100, 150, 200]`)
 	command.Flags().String("filter", "All", `[All, PoweredOn, PoweredOff, Installing, Pending, Installed]`)
+
+}
+
+func setupListFlagBindings(command *cobra.Command) {
 	viper.BindPFlag("search", command.Flags().Lookup("search"))
 	viper.BindPFlag("limit", command.Flags().Lookup("limit"))
 	viper.BindPFlag("filter", command.Flags().Lookup("filter"))
@@ -29,18 +33,15 @@ func init() {
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all Servers",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		setupListFlagBindings(cmd)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-
-		if viper.GetString("username") == "" || viper.GetString("password") == "" {
-			fmt.Printf("Set a username and password with --username and --password ")
-			fmt.Printf("or by setting the environment variables CAC_USERNAME and CAC_PASSWORD.\n")
-			os.Exit(1)
-		}
 
 		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 		defer cancel()
 
-		_, response, err := createClientAndList(ctx)
+		_, response, err := createClientAndList(ctx, nil)
 		if err != nil {
 			log.Printf("error creating client: %s", err)
 			return

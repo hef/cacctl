@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"sync"
 )
 
 var Version = ""
@@ -58,7 +59,7 @@ func initConfig() {
 	}
 }
 
-func createClientAndList(ctx context.Context) (c *client.Client, r *client.ListResponse, err error) {
+func createClientAndList(ctx context.Context, lambda func(c *client.Client, server *client.Server)) (c *client.Client, r *client.ListResponse, err error) {
 
 	c, err = client.New(
 		client.WithUsernameAndPassword(
@@ -79,6 +80,18 @@ func createClientAndList(ctx context.Context) (c *client.Client, r *client.ListR
 		r, err = c.List(ctx)
 	} else {
 		r, err = c.ListWithFilter(ctx, search, limit, client.ListFilterFromString(filter))
+	}
+
+	if lambda != nil {
+		wg := sync.WaitGroup{}
+		for _, server := range r.Servers {
+			wg.Add(1)
+			go func(server client.Server) {
+				lambda(c, &server)
+				wg.Done()
+			}(server)
+		}
+		wg.Wait()
 	}
 	return
 }

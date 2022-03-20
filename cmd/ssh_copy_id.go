@@ -12,12 +12,12 @@ import (
 	"golang.org/x/crypto/ssh"
 	"log"
 	"os/signal"
-	"sync"
 	"syscall"
 )
 
 func init() {
 	rootCmd.AddCommand(sshCopyIdCmd)
+	setupListFlags(sshCopyIdCmd)
 	sshCopyIdCmd.LocalNonPersistentFlags().StringP("identify-file", "i", "", "Use the identity file")
 	viper.BindPFlag("identify-file", sshCopyIdCmd.LocalNonPersistentFlags().Lookup("identify-file"))
 }
@@ -25,47 +25,27 @@ func init() {
 var sshCopyIdCmd = &cobra.Command{
 	Use:   "ssh-copy-id",
 	Short: "deploy ssh keys to servers",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		setupListFlagBindings(cmd)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 
 		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 		defer cancel()
-
-		c, err := client.New(
-			client.WithUsernameAndPassword(
-				viper.GetString("username"),
-				viper.GetString("password"),
-			),
-			client.WithUserAgent("cacctl/"+Version),
-		)
-		if err != nil {
-			panic(err)
-		}
 
 		key, err := sshx.GetPublicKey()
 		if err != nil {
 			panic(err)
 		}
 
-		serverList, err := c.List(ctx)
-		if err != nil {
-			log.Printf("Failed to get server list")
-			return
-		}
-
-		wg := sync.WaitGroup{}
-		for _, server := range serverList.Servers {
-			wg.Add(1)
-			go func(server client.Server) {
-				log.Printf("deploying key to cac-%d at %s", server.ServerId, server.IpAddress)
-				deployKey(ctx, server, key)
-				wg.Done()
-			}(server)
-		}
-		wg.Wait()
+		createClientAndList(ctx, func(c *client.Client, server *client.Server) {
+			log.Printf("deploying key to cac-%d at %s", server.ServerId, server.IpAddress)
+			deployKey(ctx, server, key)
+		})
 	},
 }
 
-func deployKey(ctx context.Context, server client.Server, key []byte) {
+func deployKey(ctx context.Context, server *client.Server, key []byte) {
 	ip := server.IpAddress
 	config := ssh.ClientConfig{
 		User: "root",
