@@ -1,6 +1,8 @@
 package client
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"reflect"
 	"testing"
@@ -140,5 +142,48 @@ func TestParseBuildPageV4(t *testing.T) {
 
 	if expectedForm.token != form.token {
 		t.Errorf("expected token: %s, got %s", expectedForm.token, form.token)
+	}
+}
+
+func FuzzParseBuildPage(f *testing.F) {
+
+	sampleFiles := []string{
+		"testdata/build_page_with_mac_pro_button.html",
+		"testdata/build_page_v4.html",
+		"testdata/build_page.html",
+	}
+
+	for _, sampleFile := range sampleFiles {
+		sampleReader, _ := os.Open(sampleFile)
+		sample, _ := io.ReadAll(sampleReader)
+		f.Add(sample)
+	}
+
+	f.Fuzz(func(t *testing.T, s []byte) {
+		r := bytes.NewReader(s)
+		out, err := parseBuildPageV4(r)
+		if err != nil && out != nil {
+			t.Errorf("%q, %v", out, err)
+		}
+	})
+}
+
+func TestXParseBuildPageV4(t *testing.T) {
+
+	testTable := []struct {
+		name  string
+		input []byte
+	}{
+		{"nullbyte", []byte{0}},
+	}
+
+	for _, tt := range testTable {
+		t.Run(tt.name, func(t *testing.T) {
+			r := bytes.NewReader(tt.input)
+			out, err := parseBuildPageV4(r)
+			if err != nil && out != nil {
+				t.Errorf("%q, %v", out, err)
+			}
+		})
 	}
 }

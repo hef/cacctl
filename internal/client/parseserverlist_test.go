@@ -1,6 +1,8 @@
 package client
 
 import (
+	"bytes"
+	"io"
 	"net"
 	"os"
 	"testing"
@@ -243,4 +245,26 @@ func TestParseLogin(t *testing.T) {
 			t.Errorf("expected Package %s, got %s", expectedServer.Package, server.Package)
 		}
 	}
+}
+
+func FuzzParseServerList(f *testing.F) {
+
+	sampleFiles := []string{
+		"testdata/login_success.html",
+		"testdata/2_installing.html",
+	}
+
+	for _, sampleFile := range sampleFiles {
+		sampleReader, _ := os.Open(sampleFile)
+		sample, _ := io.ReadAll(sampleReader)
+		f.Add(sample)
+	}
+
+	f.Fuzz(func(t *testing.T, s []byte) {
+		r := bytes.NewReader(s)
+		out, err := parseServersFromBody(r)
+		if err != nil && out != nil {
+			t.Errorf("%q, %v", out, err)
+		}
+	})
 }

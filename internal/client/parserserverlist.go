@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"net"
@@ -45,29 +46,9 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 		server.Ipv4 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv4:')").Next().Text()))
 		server.Ipv6 = net.ParseIP(strings.TrimSpace(selection.Find("td td:contains('IPv6:')").Next().Text()))
 
-		cpuCountString := selection.Find("td td:contains(' CPU:')").First().Text()
-		cpuCountString = cpuCountString[:len(cpuCountString)-len(" CPU:")]
-		cpuCount, err := strconv.ParseInt(cpuCountString, 10, 32)
-		if err != nil {
-			return
-		}
-		server.CpuCount = int32(cpuCount)
-
-		ramMBString := selection.Find("td td:contains('MB Ram:')").First().Text()
-		ramMBString = ramMBString[:len(ramMBString)-len("MB Ram:")]
-		ramMB, err := strconv.ParseInt(ramMBString, 10, 32)
-		if err != nil {
-			return
-		}
-		server.RamMB = int32(ramMB)
-
-		ssdGBString := selection.Find("td td:contains('GB SSD:')").First().Text()
-		ssdGBString = ssdGBString[:len(ssdGBString)-len("GB SSD:")]
-		ssdGB, err := strconv.ParseInt(ssdGBString, 10, 32)
-		if err != nil {
-			return
-		}
-		server.SsdGB = int32(ssdGB)
+		server.CpuCount = parseValueFromServerResources(selection, " CPU")
+		server.RamMB = parseValueFromServerResources(selection, "MB Ram")
+		server.SsdGB = parseValueFromServerResources(selection, "GB SSD")
 
 		server.Package = strings.TrimSpace(selection.Find("[id^=Body_].panel-collapse div").Last().Text())
 
@@ -106,4 +87,18 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 	})
 
 	return servers, nil
+}
+
+func parseValueFromServerResources(selection *goquery.Selection, resourceType string) (value int32) {
+	selector := fmt.Sprintf("td td:contains('%s:')", resourceType)
+	resourceString := selection.Find(selector).First().Text()
+	if len(resourceString) > len(resourceType)+1 {
+		resourceString = resourceString[:len(resourceString)-len(resourceType)-1]
+		resourceCount, err := strconv.ParseInt(resourceString, 10, 32)
+		if err != nil {
+			return
+		}
+		return int32(resourceCount)
+	}
+	return
 }

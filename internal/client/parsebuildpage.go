@@ -2,6 +2,7 @@ package client
 
 import (
 	"errors"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"strconv"
@@ -106,61 +107,10 @@ func parseBuildPageV4(reader io.Reader) (*parsedBuildFormV4, error) {
 		}
 	})
 
-	{
-		dailyLimitNode := doc.Find("td:contains(' Daily Limit:')").First()
-		dailyLimitString := dailyLimitNode.Text()
-		dailyLimitString = dailyLimitString[:len(dailyLimitString)-len(" Daily Limit:")]
-		dailyLimit, err := strconv.ParseInt(dailyLimitString, 10, 32)
-		if err == nil {
-			form.totalBuilds = int32(dailyLimit)
-		}
-		DailyLimitPercentString := strings.TrimSpace(dailyLimitNode.Next().Text())
-		DailyLimitPercentString = DailyLimitPercentString[:len(DailyLimitPercentString)-1]
-		dailyLimitPercent, err := strconv.ParseInt(DailyLimitPercentString, 10, 32)
-		form.percentUsedBuilds = int32(dailyLimitPercent)
-	}
-
-	{
-		cpuNode := doc.Find("td:contains(' CPU:')").First()
-		cpuString := cpuNode.Text()
-		cpuString = cpuString[:len(cpuString)-len(" CPU:")]
-		cpu, err := strconv.ParseInt(cpuString, 10, 32)
-		if err == nil {
-			form.totalCpu = int32(cpu)
-		}
-		cpuPercentString := strings.TrimSpace(cpuNode.Next().Text())
-		cpuPercentString = cpuPercentString[:len(cpuPercentString)-1]
-		cpuPercent, err := strconv.ParseInt(cpuPercentString, 10, 32)
-		form.percentUsedCpu = int32(cpuPercent)
-	}
-
-	{
-		ramNode := doc.Find("td:contains(' MB RAM:')").First()
-		ramString := ramNode.Text()
-		ramString = ramString[:len(ramString)-len(" MB RAM:")]
-		ram, err := strconv.ParseInt(ramString, 10, 32)
-		if err == nil {
-			form.totalRam = int32(ram)
-		}
-		ramPercentString := strings.TrimSpace(ramNode.Next().Text())
-		ramPercentString = ramPercentString[:len(ramPercentString)-1]
-		ramPercent, err := strconv.ParseInt(ramPercentString, 10, 32)
-		form.percentUsedRam = int32(ramPercent)
-	}
-
-	{
-		ssdNode := doc.Find("td:contains(' GB SSD:')").First()
-		ssdString := ssdNode.Text()
-		ssdString = ssdString[:len(ssdString)-len(" GB SSD:")]
-		ssd, err := strconv.ParseInt(ssdString, 10, 32)
-		if err == nil {
-			form.totalSsd = int32(ssd)
-		}
-		ssdPercentString := strings.TrimSpace(ssdNode.Next().Text())
-		ssdPercentString = ssdPercentString[:len(ssdPercentString)-1]
-		ssdPercent, err := strconv.ParseInt(ssdPercentString, 10, 32)
-		form.percentUsedSSd = int32(ssdPercent)
-	}
+	form.totalBuilds, form.percentUsedBuilds = parseValueFromAvailableResourcesTable(doc, " Daily Limit")
+	form.totalCpu, form.percentUsedCpu = parseValueFromAvailableResourcesTable(doc, " CPU")
+	form.totalRam, form.percentUsedRam = parseValueFromAvailableResourcesTable(doc, " MB RAM")
+	form.totalSsd, form.percentUsedSSd = parseValueFromAvailableResourcesTable(doc, " GB SSD")
 
 	buildSubmit, ok := doc.Find("button[name=build-submit]").First().Attr("value")
 	if ok {
@@ -179,4 +129,26 @@ func parseBuildPageV4(reader io.Reader) (*parsedBuildFormV4, error) {
 
 	return form, nil
 
+}
+
+func parseValueFromAvailableResourcesTable(doc *goquery.Document, resourceType string) (total, percent int32) {
+	selector := fmt.Sprintf("td:contains('%s:')", resourceType)
+	resourceNode := doc.Find(selector).First()
+	resourceString := resourceNode.Text()
+	if len(resourceString) > len(resourceType)+1 {
+		resourceString = resourceString[:len(resourceString)-len(resourceType)-1]
+		resource, err := strconv.ParseInt(resourceString, 10, 32)
+		if err == nil {
+			total = int32(resource)
+		}
+		resourcePercentString := strings.TrimSpace(resourceNode.Next().Text())
+		if len(resourcePercentString) > 1 {
+			resourcePercentString = resourcePercentString[:len(resourcePercentString)-1]
+			resourcePercent, err := strconv.ParseInt(resourcePercentString, 10, 32)
+			if err == nil {
+				percent = int32(resourcePercent)
+			}
+		}
+	}
+	return
 }

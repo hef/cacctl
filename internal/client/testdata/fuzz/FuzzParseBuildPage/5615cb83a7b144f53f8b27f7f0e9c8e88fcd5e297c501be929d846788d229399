@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("<tABle ><td> GB SSD:0")
