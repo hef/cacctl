@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/hef/cacctl/internal/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -13,8 +12,18 @@ import (
 	"text/tabwriter"
 )
 
+func setupListFlags(command *cobra.Command) {
+	command.Flags().String("search", "", `search string`)
+	command.Flags().Int("limit", 25, `[5, 10, 25, 50, 100, 150, 200]`)
+	command.Flags().String("filter", "All", `[All, PoweredOn, PoweredOff, Installing, Pending, Installed]`)
+	viper.BindPFlag("search", command.Flags().Lookup("search"))
+	viper.BindPFlag("limit", command.Flags().Lookup("limit"))
+	viper.BindPFlag("filter", command.Flags().Lookup("filter"))
+}
+
 func init() {
 	rootCmd.AddCommand(listCmd)
+	setupListFlags(listCmd)
 }
 
 var listCmd = &cobra.Command{
@@ -31,20 +40,10 @@ var listCmd = &cobra.Command{
 		ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 		defer cancel()
 
-		c, err := client.New(
-			client.WithUsernameAndPassword(
-				viper.GetString("username"),
-				viper.GetString("password"),
-			),
-			client.WithUserAgent("cacctl/"+Version),
-		)
+		_, response, err := createClientAndList(ctx)
 		if err != nil {
-			panic(err)
-		}
-
-		response, err := c.List(ctx)
-		if err != nil {
-			log.Printf("error: %s", err)
+			log.Printf("error creating client: %s", err)
+			return
 		}
 
 		if response != nil {

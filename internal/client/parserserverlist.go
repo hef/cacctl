@@ -13,6 +13,9 @@ import (
 // PowerCycle(2, "c999963378-CloudPRO-519046902-629183859", "255330174", "c999963378-cloudpro-799792359")
 var powerCycleCallRegex = regexp.MustCompile(`PowerCycle\(\d, "(?P<vmname>[\w\-]+)", "\d+", "[\w\-]+"\)`)
 
+// DELETECPRO2(255330174, "c999963378-cloudpro-799792359", "999963378", "c999963378-CloudPRO-519046902-629183859", "v4")
+var deleteCPro2CallRegex = regexp.MustCompile(`DELETECPRO2\((?P<sid>\d+), "(?P<servername>[\w\-]+)", "(?P<cid>\d+)", "(?P<vmname>[\w\-]+)", "v4"\)`)
+
 func parseServersFromBody(reader io.Reader) ([]Server, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
 	if err != nil {
@@ -101,8 +104,16 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 				server.VmName = m[1]
 			}
 		}
-		servers = append(servers, server)
 
+		deleteCPro2Call, ok := selection.Find("a[onclick*='DELETECPRO2']").First().Attr("onclick")
+		if ok {
+			m := deleteCPro2CallRegex.FindStringSubmatch(deleteCPro2Call)
+			if len(m) > 3 {
+				//server.VmName = m[1]
+				server.CustomerId, _ = strconv.ParseInt(m[3], 10, 64)
+			}
+		}
+		servers = append(servers, server)
 	})
 
 	return servers, nil

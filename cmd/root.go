@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"github.com/hef/cacctl/internal/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -54,4 +56,29 @@ func initConfig() {
 			log.Printf("error reading config file %s: %s", viper.ConfigFileUsed(), err)
 		}
 	}
+}
+
+func createClientAndList(ctx context.Context) (c *client.Client, r *client.ListResponse, err error) {
+
+	c, err = client.New(
+		client.WithUsernameAndPassword(
+			viper.GetString("username"),
+			viper.GetString("password"),
+		),
+		client.WithUserAgent("cacctl/"+Version),
+	)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	search := viper.GetString("search")
+	limit := viper.GetInt("limit")
+	filter := viper.GetString("filter")
+	if search == "" && limit == 25 && filter == "All" {
+		r, err = c.List(ctx)
+	} else {
+		r, err = c.ListWithFilter(ctx, search, limit, client.ListFilterFromString(filter))
+	}
+	return
 }

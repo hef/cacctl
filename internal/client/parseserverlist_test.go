@@ -35,6 +35,7 @@ func TestParseServerList(t *testing.T) {
 				Gateway:    net.IPv4(142, 47, 88, 1),
 				Password:   "3aXz7qSd9S",
 				VmName:     "c999963378-CloudPRO-519046902-629183859",
+				CustomerId: 999963378,
 				CurrentOs:  "Ubuntu 18.04 LTS 64bit",
 				Ipv4:       net.IPv4(142, 47, 88, 68),
 				Ipv6:       net.ParseIP("2607:8880::A000:1044"),
@@ -57,6 +58,7 @@ func TestParseServerList(t *testing.T) {
 				Netmask:    net.IPv4(255, 255, 255, 0),
 				Gateway:    net.IPv4(142, 47, 88, 1),
 				Password:   "n22rW2BG4d",
+				CustomerId: 0, // Not reliable source.  Could extract it from server name maybe.
 				CurrentOs:  "Ubuntu 18.04 LTS 64bit",
 				Ipv4:       net.IPv4(142, 47, 88, 224),
 				Ipv6:       net.ParseIP("2607:8880::a000:10e0"),
@@ -73,6 +75,7 @@ func TestParseServerList(t *testing.T) {
 				IpAddress:  net.IPv4(142, 47, 88, 223),
 				Netmask:    net.IPv4(255, 255, 255, 0),
 				Gateway:    net.IPv4(142, 47, 88, 1),
+				CustomerId: 0, // Not reliable source.  Could extract it from server name maybe.
 				Password:   "3YAqeQPz6t",
 				CurrentOs:  "Ubuntu 18.04 LTS 64bit",
 				Ipv4:       net.IPv4(142, 47, 88, 223),
@@ -132,6 +135,11 @@ func TestParseServerList(t *testing.T) {
 				if expectedServer.VmName != server.VmName {
 					t.Errorf("expected VM Name %s, got %s", expectedServer.VmName, server.VmName)
 				}
+
+				if expectedServer.CustomerId != server.CustomerId {
+					t.Errorf("expected CustomerID %d, got %d", expectedServer.CustomerId, server.CustomerId)
+				}
+
 				if expectedServer.CurrentOs != server.CurrentOs {
 					t.Errorf("expected Current OS: %s, got %s", expectedServer.CurrentOs, server.CurrentOs)
 				}
