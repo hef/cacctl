@@ -28,17 +28,18 @@ func parseServersFromBody(reader io.Reader) ([]Server, error) {
 		TitleNode := selection.Find("td[id^=PanelTitle_]").First().Text()
 		if TitleNode == "" {
 			return
+		} else if TitleNode == "  Install Pending  \n\t\t\t\t\t  Status " {
+			server.Status = "Install Pending"
+		} else if TitleNode == "  Installing " {
+			server.Status = "Installing"
+		} else if TitleNode == "  Install Failed  \n\t\t\t\t\t  Details" {
+			server.Status = "Install Failed"
+		} else {
+			server.ServerName = strings.TrimSpace(selection.Find("td[id^=PanelTitle_]").First().Text())
 		}
 
 		icon, ok := selection.Find("td[id^=PanelTitle_] i").First().Attr("class")
 		if ok {
-			if icon == "fa fa-spinner fa-spin" {
-				// Installing
-				server.Status = strings.TrimSpace(selection.Find("td[id^=PanelTitle_]").First().Text())
-			} else {
-				// If the Icon isn't a spinner, this spot holds the server name
-				server.ServerName = strings.TrimSpace(selection.Find("td[id^=PanelTitle_]").First().Text())
-			}
 			if icon == "fa fa-cloud-upload" {
 				server.Status = "Powered On"
 			}
