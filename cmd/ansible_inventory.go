@@ -85,8 +85,8 @@ var ansibleInventoryCmd = &cobra.Command{
 			Masters []client.Server
 			Workers []client.Server
 		}{
-			Masters: response.Servers[:masters],
-			Workers: response.Servers[masters:],
+			Masters: response.Servers[len(response.Servers)-masters:],
+			Workers: response.Servers[:len(response.Servers)-masters],
 		}
 
 		err = tmpl.Execute(os.Stdout, data)
