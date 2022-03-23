@@ -89,7 +89,7 @@ func TestParseServerList(t *testing.T) {
 		},
 		{
 			Name:    "InstallPending",
-			Fixture: "testdata/installPending.html",
+			Fixture: "testdata/InstallPending.html",
 			ExpectedServers: []Server{{
 				ServerName: "",
 				ServerId:   255330813,
