@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/hef/cacctl/internal/client"
+	"github.com/hef/cacctl/client"
 	"github.com/hef/cacctl/internal/sshx"
 	"github.com/pkg/sftp"
 	"github.com/spf13/afero/sftpfs"

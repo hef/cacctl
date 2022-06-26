@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"github.com/hef/cacctl/internal/client"
+	"github.com/hef/cacctl/client"
 	"github.com/spf13/cobra"
 	"log"
 	"os/signal"
