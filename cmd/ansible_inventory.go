@@ -1,11 +1,9 @@
-//go:build dev
-
 package cmd
 
 import (
 	"context"
 	"fmt"
-	"github.com/hef/cacctl/internal/client"
+	"github.com/hef/cacctl/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
