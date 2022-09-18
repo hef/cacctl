@@ -44,6 +44,25 @@ func TestParseBuildPageWithMacButton(t *testing.T) {
 	}
 }
 
+func TestParseBuildPageWithCloudRSTornotnoButton(t *testing.T) {
+	f, err := os.Open("testdata/build_page_cloud_rs.html")
+	if err != nil {
+		panic(err)
+	}
+
+	form, err := parseBuildPage(f)
+	if err != nil {
+		t.Errorf("error parsing build page: %s", err)
+	}
+
+	if form.infra != "25b262885c36c" {
+		t.Errorf("got unexpected infra, expected %s, got %s", "25b262885c36c", form.infra)
+	}
+	if form.token != "6a59dbf7e8b04" {
+		t.Errorf("got unexpected token, expected %s, got %s", "6a59dbf7e8b04", form.token)
+	}
+}
+
 func TestParseBuildPageV4(t *testing.T) {
 	f, err := os.Open("testdata/build_page_v4.html")
 	if err != nil {
