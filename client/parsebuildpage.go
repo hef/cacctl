@@ -22,9 +22,16 @@ func parseBuildPage(reader io.Reader) (*parsedBuildForm, error) {
 	form := &parsedBuildForm{}
 
 	var ok bool
-	form.infra, ok = doc.Find("button[name=infra]:contains('Build to ')").First().Attr("value")
+	form.infra, ok = doc.Find("button[name=infra]:contains('Build to Cloud RS (Toronto)')").First().Attr("value")
 	if !ok {
-		return nil, errors.New("failed to parse page")
+		// todo: just remove this and fix the tests. CloudPro and Mac pages don't exist anymore
+		form.infra, ok = doc.Find("button[name=infra]:contains('Build to CloudPRO v4')").First().Attr("value")
+		if !ok {
+			form.infra, ok = doc.Find("button[name=infra]:contains('Build to')").First().Attr("value")
+			if !ok {
+				return nil, errors.New("failed to parse page")
+			}
+		}
 	}
 	form.token, ok = doc.Find("input[name=token]").First().Attr("value")
 	if !ok {
