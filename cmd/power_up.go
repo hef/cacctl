@@ -10,13 +10,13 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(rebootCmd)
-	setupListFlags(rebootCmd)
+	rootCmd.AddCommand(powerUpCmd)
+	setupListFlags(powerUpCmd)
 }
 
-var powerDownCmd = &cobra.Command{
-	Use:   "power_down",
-	Short: "power down servers",
+var powerUpCmd = &cobra.Command{
+	Use:   "power_up",
+	Short: "power up servers",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		setupListFlagBindings(cmd)
 	},
@@ -26,11 +26,11 @@ var powerDownCmd = &cobra.Command{
 		defer cancel()
 
 		createClientAndList(ctx, func(c *client.Client, server *client.Server) {
-			err := c.PowerCycle(ctx, client.PowerDown, server.VmName, server.ServerId)
+			err := c.PowerCycle(ctx, client.PowerUp, server.VmName, server.ServerId)
 			if err != nil {
-				log.Printf("error powering down %s: %s", server.ServerName, err)
+				log.Printf("error powering up %s: %s", server.ServerName, err)
 			} else {
-				log.Printf("cac-%d has been rebooted", server.ServerId)
+				log.Printf("cac-%d has been powered up", server.ServerId)
 			}
 		})
 	},

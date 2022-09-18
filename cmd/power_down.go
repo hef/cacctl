@@ -10,8 +10,8 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(rebootCmd)
-	setupListFlags(rebootCmd)
+	rootCmd.AddCommand(powerDownCmd)
+	setupListFlags(powerDownCmd)
 }
 
 var powerDownCmd = &cobra.Command{
@@ -28,9 +28,9 @@ var powerDownCmd = &cobra.Command{
 		createClientAndList(ctx, func(c *client.Client, server *client.Server) {
 			err := c.PowerCycle(ctx, client.PowerDown, server.VmName, server.ServerId)
 			if err != nil {
-				log.Printf("error rebooting %s: %s", server.ServerName, err)
+				log.Printf("error powering down %s: %s", server.ServerName, err)
 			} else {
-				log.Printf("cac-%d has been rebooted", server.ServerId)
+				log.Printf("cac-%d has been powered down", server.ServerId)
 			}
 		})
 	},

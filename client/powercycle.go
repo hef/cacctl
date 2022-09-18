@@ -30,6 +30,18 @@ func (p PowerCycle) int() int {
 	}
 }
 
+type errPowerCycleResponse string
+
+func (e errPowerCycleResponse) Error() string {
+	return string(e)
+}
+
+var (
+	errServerSuccessfullyRebooted   errPowerCycleResponse = "Server Successfully Rebooted"
+	errServerSuccessfullyPoweredOff errPowerCycleResponse = "Server Successfully Powered Off"
+	errServerSuccessfullyPoweredOn  errPowerCycleResponse = "Server Successfully Powered On"
+)
+
 func (c *Client) PowerCycle(ctx context.Context, cycle PowerCycle, vmName string, sid int64) error {
 
 	q := url.Values{}
@@ -55,11 +67,29 @@ func (c *Client) PowerCycle(ctx context.Context, cycle PowerCycle, vmName string
 		if err != nil {
 			return err
 		}
-		if string(body) != "Server Successfully Rebooted" {
-			return fmt.Errorf("powercycle response: %s", string(body))
+		switch errPowerCycleResponse(body) {
+		case errServerSuccessfullyRebooted:
+			if cycle == Reboot {
+				return nil
+			} else {
+				return errServerSuccessfullyRebooted
+			}
+		case errServerSuccessfullyPoweredOff:
+			if cycle == PowerDown {
+				return nil
+			} else {
+				return errServerSuccessfullyPoweredOff
+			}
+		case errServerSuccessfullyPoweredOn:
+			if cycle == PowerUp {
+				return nil
+			} else {
+				return errServerSuccessfullyPoweredOn
+			}
+		default:
+			return fmt.Errorf("unexpected powercycle response: %s", body)
 		}
 	} else {
-		return fmt.Errorf("powercycle error: (%d) %s", resp.StatusCode, resp.Status)
+		return fmt.Errorf("powercycle page error: (%d) %s", resp.StatusCode, resp.Status)
 	}
-	return nil
 }
